@@ -60,6 +60,11 @@
     protected override async Task OnParametersSetAsync()
     {
         this.inventory ??= await ViewInventoryByIdUseCase.ExecuteAsync(this.InvId);
+
+        if(this.inventory is null)
+        {
+            NavigationManager.NavigateTo("/not-found");
+        }
     }
     private async Task Update()
     {
