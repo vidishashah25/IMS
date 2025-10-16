@@ -1,4 +1,8 @@
-﻿<SearchProductInventoriesComponent OnInventorySelected="HandleInventorySelected"></SearchProductInventoriesComponent>
+﻿
+<div class="card">
+    <div class="card-body">   
+
+<SearchProductInventoriesComponent OnInventorySelected="HandleInventorySelected"></SearchProductInventoriesComponent>
 @if(
     this.Product is not null &&
     this.Product.ProductInventories is not null &&
@@ -31,7 +35,10 @@
             }
         </tbody>
     </table>
+
 }
+    </div>
+</div>
 
 @code {
 
