@@ -56,9 +56,10 @@ namespace IMS.Plugins.InMemory
         {
             var prod = _products.FirstOrDefault(x => x.ProductId == productId);
 
-            var newProd = new Product();
+            Product? newProd = null;
             if (prod != null)
             {
+                newProd = new Product();
                 newProd.ProductId = prod.ProductId;
                 newProd.ProductName = prod.ProductName;
                 newProd.Price = prod.Price;
@@ -94,18 +95,19 @@ namespace IMS.Plugins.InMemory
 
         public Task UpdateProductAsync(Product product)
         {
-            if (_products.Any(x => x.ProductId != product.ProductId &&
-                x.ProductName.Equals(product.ProductName, StringComparison.OrdinalIgnoreCase)))
-                return Task.CompletedTask;
+            if (_products.Any(x => x.ProductId != product.ProductId 
+                    && x.ProductName.ToLower() == product.ProductName.ToLower())) return Task.CompletedTask;
 
-            var invToUpdate = _products.FirstOrDefault(x => x.ProductId == product.ProductId);
-            if (invToUpdate is not null)
+
+            var prod = _products.FirstOrDefault(x => x.ProductId == product.ProductId);
+
+            if(prod != null)
             {
-                invToUpdate.ProductName = product.ProductName;
-                invToUpdate.Quantity = product.Quantity;
-                invToUpdate.Price = product.Price;
+                prod.ProductName = product.ProductName;
+                prod.Price = product.Price;
+                prod.Quantity = product.Quantity;
+                prod.ProductInventories = product.ProductInventories;
             }
-
             return Task.CompletedTask;
         }
     }
