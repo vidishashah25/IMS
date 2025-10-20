@@ -31,6 +31,6 @@ namespace IMS.CoreBusiness
         [Required]
         public string DoneBy { get; set; } = string.Empty;
 
-        public Inventory Inventory { get; set; }
+        public Inventory? Inventory { get; set; }
     }
 }
