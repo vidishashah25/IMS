@@ -3,6 +3,7 @@
 @rendermode InteractiveServer
 
 @using static IMS.WebApp.Components.Controls.Common.AutoCompleteComponent
+@inject IJSRuntime JSRuntime
 
 @inject IViewProductsByNameUseCase ViewProductsByNameUseCase
 @inject IViewProductByIdUseCase ViewProductByIdUseCase
@@ -11,7 +12,7 @@
 <h3>Produce Product</h3>
 <br/>
 
-<EditForm Model="produceViewModel" OnValidSubmit="Produce">
+<EditForm id="produce-form" Model="produceViewModel" OnValidSubmit="Produce">
     <DataAnnotationsValidator></DataAnnotationsValidator>
     <ValidationSummary></ValidationSummary>
 
@@ -42,6 +43,15 @@
     private ProduceViewModel produceViewModel = new ProduceViewModel();
     private Product? selectedProduct;
 
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+
+        if (firstRender)
+        {
+            JSRuntime.InvokeVoidAsync("preventFormSubmission", "produce-form");
+        }
+    }
     private List<ItemViewModel>? SearchProduct(string name)
     {
         var list = ViewProductsByNameUseCase.ExecuteAsync(name).GetAwaiter().GetResult();
