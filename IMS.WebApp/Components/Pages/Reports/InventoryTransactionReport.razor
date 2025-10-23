@@ -9,18 +9,18 @@
 <div class="row">
     <div class="col">
         <label for="inv">Inventory Name</label>
-        <input type="text" id="inv" class="form-control" @bind-value="invName"/>
+        <input type="text" id="inv" class="form-control" @bind-value="invName" />
     </div>
     <div class="col">
-        <label for="inv">Date From</label>
+        <label for="df">Date From</label>
         <input type="date" id="df" class="form-control" @bind-value="dateFrom" />
     </div>
     <div class="col">
-        <label for="inv">Date To</label>
+        <label for="dt">Date To</label>
         <input type="date" id="dt" class="form-control" @bind-value="dateTo" />
     </div>
     <div class="col">
-        <label for="inv">Acivity Type</label>
+        <label for="at">Activity Type</label>
         <select id="at" class="form-control" @bind-value="activityTypeId" @bind-value:event="onchange">
             <option value="0"></option>
             <option value="1">Purchase Inventory</option>
@@ -78,7 +78,7 @@
     private string invName;
     private DateTime? dateFrom;
     private DateTime? dateTo;
-    private int? activityTypeId;
+    private int activityTypeId = 0;
     private IEnumerable<InventoryTransaction>? inventoryTransactions;
 
     private async Task SearchInventories()
@@ -86,12 +86,14 @@
         InventoryTransactionType? invType = null;
         if (activityTypeId != 0) invType = (InventoryTransactionType)activityTypeId;
 
-         inventoryTransactions =await SearchInventoryTransactionUseCase.ExecuteAsync(
+        inventoryTransactions = await SearchInventoryTransactionUseCase.ExecuteAsync
+        (
             invName,
             dateFrom,
             dateTo,
             invType
         );
     }
+
 
 }
