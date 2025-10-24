@@ -41,6 +41,7 @@ namespace IMS.Plugins.EFCoreMYSql
         {
             using var db = this.contextFactory.CreateDbContext();
             var product = await db.Products.Include(x => x.ProductInventories)!
+                                            .ThenInclude(x => x.Inventory)
                                             .FirstOrDefaultAsync(x => x.ProductId == productId);
 
 
@@ -58,8 +59,7 @@ namespace IMS.Plugins.EFCoreMYSql
         public async Task UpdateProductAsync(Product product)
         {
             using var db = this.contextFactory.CreateDbContext();
-            var prod = await db.Products.Include(x => x.ProductInventories)!
-                                        .ThenInclude(x => x.Inventory)
+            var prod = await db.Products.Include(x => x.ProductInventories)!       
                                         .FirstOrDefaultAsync(x => x.ProductId == product.ProductId);
 
             if (prod is not null)

@@ -79,7 +79,7 @@ namespace IMS.Plugins.EFCoreMYSql
                 SONumber = salesOrderNumber,
                 ProductId = product.ProductId,
                 QuantityBefore = product.Quantity,
-                QuantityAfter = product.Quantity + quantity,
+                QuantityAfter = product.Quantity - quantity,
                 TransactionDate = DateTime.Now,
                 DoneBy = doneBy,
                 UnitPrice = unitPrice
