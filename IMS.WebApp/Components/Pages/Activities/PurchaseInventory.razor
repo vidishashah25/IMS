@@ -2,6 +2,7 @@
 @attribute [Authorize]
 
 @rendermode InteractiveServer
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @using static IMS.WebApp.Components.Controls.Common.AutoCompleteComponent
 
 @inject IJSRuntime JSRuntime
@@ -49,6 +50,13 @@
     private PurchaseViewModel purchaseViewModel = new PurchaseViewModel();
     private Inventory? selectedInventory = null;
 
+    private AuthenticationState? authState;
+
+    protected override async Task OnInitializedAsync()
+    {
+        authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+    }
+
     private ItemViewModel? selectedItem;
 
     protected override void OnAfterRender(bool firstRender)
@@ -80,11 +88,18 @@
     }
     private async Task Purchase()
     {
+        string userName = string.Empty;
+
+        if (authState?.User?.Identity?.IsAuthenticated ?? false)
+        {
+            userName = authState.User.Identity.Name ?? string.Empty;
+        }
+
         await PurchaseInventoryUseCase.ExecuteAsync(
             this.purchaseViewModel.PONumber,
             selectedInventory,
             this.purchaseViewModel.QuantityToPurchase,
-            "Frank"
+            userName
             );
 
         this.purchaseViewModel = new PurchaseViewModel();
