@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace IMS.Plugins.EFCoreMYSql
 {
-    public class ProductEFCoreRespostiory : IProductRepository
+    public class ProductEFCoreRepository : IProductRepository
     {
         private readonly IDbContextFactory<IMSContext> contextFactory;
 
-        public ProductEFCoreRespostiory(IDbContextFactory<IMSContext> contextFactory)
+        public ProductEFCoreRepository(IDbContextFactory<IMSContext> contextFactory)
         {
             this.contextFactory = contextFactory;
         }
@@ -40,10 +40,13 @@ namespace IMS.Plugins.EFCoreMYSql
         public async Task<Product?> GetProductByIdAsync(int productId)
         {
             using var db = this.contextFactory.CreateDbContext();
-            var product = await db.Products.FindAsync(productId);
+            var product = await db.Products.Include(x => x.ProductInventories)!
+                                            .FirstOrDefaultAsync(x => x.ProductId == productId);
+
+
             if (product is not null) return product;
 
-            return new Product();
+            return product;
         }
 
         public async Task<IEnumerable<Product>> GetProductsByNameAsync(string name)
@@ -55,7 +58,10 @@ namespace IMS.Plugins.EFCoreMYSql
         public async Task UpdateProductAsync(Product product)
         {
             using var db = this.contextFactory.CreateDbContext();
-            var prod = await db.Products.FindAsync(product.ProductId);
+            var prod = await db.Products.Include(x => x.ProductInventories)!
+                                        .ThenInclude(x => x.Inventory)
+                                        .FirstOrDefaultAsync(x => x.ProductId == product.ProductId);
+
             if (prod is not null)
             {
                 prod.ProductName = product.ProductName;
